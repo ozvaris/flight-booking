@@ -26,17 +26,17 @@ export class AuthService {
     await this.userRepository.save(user);
   }
 
-  async validateUser(email: string, pass: string): Promise<any> {
+  async validateUser(email: string, pass: string): Promise<User | null> {
     const user = await this.userRepository.findOne({ where: { email } });
 
     if (user && (await bcrypt.compare(pass, user.password))) {
       const { password, ...result } = user;
-      return result;
+      return user;
     }
     return null;
   }
 
-  async login(user: any) {
+  async login(user: User) {
     const payload: JwtPayload = { email: user.email, sub: user.id, roles: user.roles };
     return {
       access_token: this.jwtService.sign(payload),

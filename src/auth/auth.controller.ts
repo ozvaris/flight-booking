@@ -5,6 +5,7 @@ import { Controller, Post, Body, UseGuards, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
+import { User } from '../user/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -17,7 +18,7 @@ export class AuthController {
 
   @Post('/login')
   async login(@Body() authCredentialsDto: AuthCredentialsDto) {
-    const user = await this.authService.validateUser(authCredentialsDto.email, authCredentialsDto.password);
+    const user: User = await this.authService.validateUser(authCredentialsDto.email, authCredentialsDto.password);
     if (!user) {
       throw new UnauthorizedException();
     }
