@@ -1,5 +1,5 @@
 // src/auth/auth.service.ts
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ConflictException, InternalServerErrorException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -23,7 +23,15 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const user = this.userRepository.create({ email, password: hashedPassword, roles: ['user'] });
-    await this.userRepository.save(user);
+    try {
+      await this.userRepository.save(user);
+    } catch (error) {
+      if (error.code === '23505') { // '23505' is the error code for unique constraint violation in PostgreSQL
+        throw new ConflictException('This user already exists');
+      } else {
+        throw new InternalServerErrorException();
+      }
+    }
   }
 
   async validateUser(email: string, pass: string): Promise<User | null> {
