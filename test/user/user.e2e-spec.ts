@@ -25,14 +25,6 @@ describe('UserController (e2e)', () => {
     await app.init();
 
     userRepository = moduleFixture.get<Repository<User>>(getRepositoryToken(User));
-  });
-
-  afterAll(async () => {
-    await app.close();
-  });
-
-  beforeEach(async () => {
-    await userRepository.clear();
     
     // İlk kullanıcı oluşturma ve token alma
     const signupData1 = {
@@ -60,6 +52,16 @@ describe('UserController (e2e)', () => {
 
     anotherUserToken = response2.body.accessToken;
     anotherUserId = response2.body.user.id;
+
+  });
+
+  afterAll(async () => {
+    await userRepository.createQueryBuilder().delete().from(User).execute();
+    await app.close();
+  });
+
+  beforeEach(async () => {
+    
   });
 
   it('/user/:id (GET) - should get user profile', async () => {

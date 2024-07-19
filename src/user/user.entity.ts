@@ -1,5 +1,6 @@
 // src/user/user.entity.ts
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { Booking } from '../booking/booking.entity';
 
 @Entity()
 export class User {
@@ -29,6 +30,9 @@ export class User {
 
   @Column("simple-array", { default: "user" })
   roles: string[];
+
+  @OneToMany(() => Booking, booking => booking.user)
+  bookings: Booking[];
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;

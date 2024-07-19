@@ -23,11 +23,12 @@ describe('AuthController (e2e)', () => {
   });
 
   afterAll(async () => {
+    await userRepository.createQueryBuilder().delete().from(User).execute();
     await app.close();
   });
 
   beforeEach(async () => {
-    await userRepository.clear();
+    await userRepository.createQueryBuilder().delete().from(User).execute();
   });
 
   describe('/auth/signup (POST)', () => {

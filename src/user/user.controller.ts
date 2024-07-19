@@ -7,6 +7,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { RequestWithUser } from '../auth/interfaces/request-with-user.interface';
+import { User } from './user.entity';
 
 @Controller('user')
 @UseGuards(JwtAuthGuard)
@@ -62,7 +63,7 @@ export class UserController {
     @Body() updateProfileDto: UpdateProfileDto,
     @Req() req: RequestWithUser,
   ): Promise<any> {
-    const user = req.user as any; // JWT'den gelen kullanıcı bilgisi
+    const user = req.user as User; // user Info come from JWT
     if (user.id !== id) {
       throw new ForbiddenException('You can only update your own profile');
     }
