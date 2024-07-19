@@ -35,13 +35,13 @@ import { AppController } from './app.controller';
 })
 export class AppModule {}
 
-//console.log('NODE_ENV:', process.env.NODE_ENV);
-// if (process.env.NODE_ENV !== 'test') {
-//   console.log('DATABASE_HOST:', process.env.DATABASE_HOST);
-//   console.log('DATABASE_PORT:', process.env.DATABASE_PORT);
-//   console.log('DATABASE_USERNAME:', process.env.DATABASE_USERNAME);
-//   console.log('DATABASE_PASSWORD:', process.env.DATABASE_PASSWORD);
-//   console.log('DATABASE_NAME:', process.env.DATABASE_NAME);
-// }
+console.log('NODE_ENV:', process.env.NODE_ENV);
+if (process.env.NODE_ENV !== 'test') {
+  console.log('DATABASE_HOST:', process.env.DATABASE_HOST);
+  console.log('DATABASE_PORT:', process.env.DATABASE_PORT);
+  console.log('DATABASE_USERNAME:', process.env.DATABASE_USERNAME);
+  console.log('DATABASE_PASSWORD:', process.env.DATABASE_PASSWORD);
+  console.log('DATABASE_NAME:', process.env.DATABASE_NAME);
+}
 
 
