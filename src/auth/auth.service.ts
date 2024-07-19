@@ -7,6 +7,7 @@ import * as bcrypt from 'bcryptjs';
 import { User } from '../user/user.entity';
 import { JwtPayload } from './jwt-payload.interface';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
+import { UserWithoutPassword } from './user-without-password.interface';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +17,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signUp(authCredentialsDto: AuthCredentialsDto): Promise<void> {
+  async signUp(authCredentialsDto: AuthCredentialsDto): Promise<{ accessToken: string, user: User }>  {
     const { email, password } = authCredentialsDto;
 
     const salt = await bcrypt.genSalt();
@@ -25,10 +26,13 @@ export class AuthService {
     const user = this.userRepository.create({ email, password: hashedPassword, roles: ['user'] });
     try {
       await this.userRepository.save(user);
+      const payload: JwtPayload = { email: user.email, sub: user.id, roles: user.roles };
+      const accessToken = this.jwtService.sign(payload);
+      return { accessToken, user };
     } catch (error) {
       console.error('Error code:', error.code); 
       console.error('Sign Up Error:', error);
-      if (error.code === 'SQLITE_CONSTRAINT' || error.code === '23505') { // Unique constraint violation for SQLite and PostgreSQL
+      if (error.code === '23505') { 
         throw new ConflictException('This user already exists');
       } else {
         throw new InternalServerErrorException();
@@ -36,8 +40,21 @@ export class AuthService {
     }
   }
 
+  async validateUserByJwt(email: string): Promise<UserWithoutPassword | null> {
+    const user = await this.userRepository.findOne({ where: { email } });
+    
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+  
+    const { password, ...result } = user; // Exclude the password from the result
+    return result;
+  }
+
   async validateUser(email: string, pass: string): Promise<User | null> {
     const user = await this.userRepository.findOne({ where: { email } });
+
+    // console.log("4 - validateUser %s %s", pass, user.password)
 
     if (!user) {
       throw new NotFoundException('User not found');
@@ -52,10 +69,11 @@ export class AuthService {
     return user;
   }
 
-  async login(user: User) {
+  async login(user: User): Promise<{ accessToken: string, user: User}> {
+    // console.log("2 - login " + user.email)
     const payload: JwtPayload = { email: user.email, sub: user.id, roles: user.roles };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+
+    const accessToken = this.jwtService.sign(payload);
+    return { accessToken, user };
   }
 }

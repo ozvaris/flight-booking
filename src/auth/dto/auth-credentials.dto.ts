@@ -1,5 +1,4 @@
 // src/auth/dto/auth-credentials.dto.ts
-// src/auth/dto/auth-credentials.dto.ts
 import { IsEmail, IsString, MinLength, MaxLength, Matches } from 'class-validator';
 
 export class AuthCredentialsDto {

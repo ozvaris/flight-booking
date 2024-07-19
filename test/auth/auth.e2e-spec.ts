@@ -54,6 +54,7 @@ describe('AuthController (e2e)', () => {
         .send(signupData)
         .expect(201);
 
+      
       return request(app.getHttpServer())
         .post('/auth/signup')
         .send(signupData)
@@ -82,6 +83,7 @@ describe('AuthController (e2e)', () => {
 
   describe('/auth/login (POST)', () => {
     it('should login a user', async () => {
+
       const signupData = {
         email: 'testuser@example.com',
         password: 'TestPassword123!'
@@ -100,9 +102,9 @@ describe('AuthController (e2e)', () => {
       return request(app.getHttpServer())
         .post('/auth/login')
         .send(loginData)
-        .expect(201)
+        .expect(200)
         .expect(({ body }) => {
-          expect(body.access_token).toBeDefined();
+          expect(body.accessToken).toBeDefined();
         });
     });
 

@@ -1,6 +1,6 @@
 // src/auth/auth.controller.ts
 
-import { Injectable, UnauthorizedException, NotFoundException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, NotFoundException, HttpCode } from '@nestjs/common';
 import { Controller, Post, Body, UseGuards, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
@@ -10,18 +10,18 @@ import * as bcrypt from 'bcryptjs';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   @Post('/signup')
-  signUp(@Body() authCredentialsDto: AuthCredentialsDto): Promise<void> {
+  signUp(@Body() authCredentialsDto: AuthCredentialsDto): Promise<{ accessToken: string, user: User}> {
     return this.authService.signUp(authCredentialsDto);
   }
 
   @Post('/login')
-  async login(@Body() authCredentialsDto: AuthCredentialsDto) {
-    const user: User = await this.authService.validateUser(authCredentialsDto.email, authCredentialsDto.password);
+  @HttpCode(200)
+  async login(@Body() authCredentialsDto: AuthCredentialsDto): Promise<{ accessToken: string, user: User}> {
 
-   try {
+    try {
       const user: User = await this.authService.validateUser(authCredentialsDto.email, authCredentialsDto.password);
       return this.authService.login(user);
     } catch (error) {
