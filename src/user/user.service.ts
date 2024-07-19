@@ -75,8 +75,9 @@ export class UserService {
         }
       }
 
-      // Yeni resmi güncelle
-      updateProfileDto.profilePicture = process.env.UPLOAD_DIRECTORY + newProfilePicture;
+      // Update picture
+      updateProfileDto.profilePicture = (process.env.NODE_ENV === 'test' ? process.env.TEST_UPLOAD_DIRECTORY : process.env.UPLOAD_DIRECTORY) + newProfilePicture;
+      
     }
 
     await this.userRepository.update(userId, { ...updateProfileDto, updatedAt: new Date() });

@@ -78,7 +78,7 @@ describe('UserController (e2e)', () => {
 
   it('/user/:id (PATCH) - should update user profile', async () => {
     const expectedResponse = { id: userId, profilePicture: 'new-picture.jpg' };
-    const filePath = 'uploads/test-pictures/horse.png';
+    const filePath = 'test/test-pictures/horse.png';
     const fileExtension = '.png';
 
     const response = await request(app.getHttpServer())
@@ -90,7 +90,7 @@ describe('UserController (e2e)', () => {
       const { profilePicture  } = response.body;
       expect(profilePicture ).toContain(fileExtension);
       
-      const fileName = profilePicture.replace('/uploads/profile-pictures/', '');
+      const fileName = profilePicture.replace('/uploads/test-pictures/', '');
       expect(fileName).toMatch(/file-\d+-\d+\.\w+/);
       
       expect(response.body).toEqual(

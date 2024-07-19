@@ -24,12 +24,30 @@ export class UserController {
     return this.userService.getAllUsers();
   }
 
+  
 
   @Patch(':id')
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: './uploads/profile-pictures',
+        destination: (req, file, cb) => {
+          const uploadDir = process.env.NODE_ENV === 'test'
+              ? process.env.TEST_UPLOAD_DIRECTORY
+              : process.env.UPLOAD_DIRECTORY;
+          
+          //Replacing /uploads/profile-pictures/ to ./uploads/profile-pictures
+          const modifyPath = (path) =>{
+                if (path.startsWith('/')) {
+                    path = '.' + path;
+                }
+                if (path.endsWith('/')) {
+                    path = path.slice(0, -1);
+                }
+                return path;
+              }
+
+          cb(null, modifyPath(uploadDir)); // cb fonksiyonu: Hata yok, dizin belirtiyor.
+      },
         filename: (req, file, cb) => {
           const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
           const ext = extname(file.originalname);
