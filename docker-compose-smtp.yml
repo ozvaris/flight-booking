@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: mailhog
+    ports:
+      - "8025:8025" # WebUI
+      - "1025:1025" # SMTP
+
+  alpine:
+    image: alpine:latest
+    container_name: alpine
+    entrypoint: /bin/sh -c "while true; do sleep 30; done;" # Container'ın açık kalmasını sağlar

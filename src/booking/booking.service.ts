@@ -6,6 +6,7 @@ import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
 import { User } from '../user/user.entity';
 import { Flight } from '../flight/flight.entity';
+import { sendBookingConfirmation } from 'src/utils/sendMail';
 
 @Injectable()
 export class BookingService {
@@ -40,6 +41,7 @@ export class BookingService {
 
     await this.bookingRepository.save(booking);
     // Add email confirmation logic here
+    await sendBookingConfirmation(user.email, booking);
 
     return booking;
   }
