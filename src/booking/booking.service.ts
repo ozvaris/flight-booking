@@ -7,6 +7,7 @@ import { UpdateBookingDto } from './dto/update-booking.dto';
 import { User } from '../user/user.entity';
 import { Flight } from '../flight/flight.entity';
 import { sendBookingConfirmation } from 'src/utils/sendMail';
+import logger from 'src/utils/elkStack';
 
 @Injectable()
 export class BookingService {
@@ -39,7 +40,14 @@ export class BookingService {
       status: 'CONFIRMED',
     });
 
-    await this.bookingRepository.save(booking);
+    try {
+      await this.bookingRepository.save(booking);
+      logger.info(`Booking completed with ${booking.user.email} booking details: ${JSON.stringify(booking)}`, { tag: 'bookingConfirmed', user_email: booking.user.email });
+    } catch (error) {
+      logger.error(`Booking completed with  ${booking.user.email}: ${error.message}`, { tag: 'bookingConfirmed', user_email: booking.user.email });
+    }
+
+    
     // Add email confirmation logic here
     await sendBookingConfirmation(user.email, booking);
 

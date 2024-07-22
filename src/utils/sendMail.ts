@@ -24,8 +24,8 @@ export async function sendBookingConfirmation(email: string, booking: Booking) {
 
   try {
     await transporter.sendMail(mailOptions);
-    logger.info(`Email sent to ${email} with booking details: ${JSON.stringify(booking)}`);
+    logger.info(`Email sent to ${email} with booking details: ${JSON.stringify(booking)}`, { tag: 'bookingEmail', user_email: booking.user.email });
   } catch (error) {
-    logger.error(`Failed to send email to ${email}: ${error.message}`);
+    logger.error(`Failed to send email to ${email}: ${error.message}`, { tag: 'bookingEmail', user_email: booking.user.email });
   }
 }
