@@ -1,5 +1,6 @@
 import * as nodemailer from 'nodemailer';
 import { Booking } from 'src/booking/booking.entity';
+import logger from './elkStack';
 
 export async function sendBookingConfirmation(email: string, booking: Booking) {
   const transporter = nodemailer.createTransport({
@@ -21,5 +22,10 @@ export async function sendBookingConfirmation(email: string, booking: Booking) {
     text: `Your booking is confirmed. Booking details: ${JSON.stringify(booking)}`,
   };
 
-  await transporter.sendMail(mailOptions);
+  try {
+    await transporter.sendMail(mailOptions);
+    logger.info(`Email sent to ${email} with booking details: ${JSON.stringify(booking)}`);
+  } catch (error) {
+    logger.error(`Failed to send email to ${email}: ${error.message}`);
+  }
 }

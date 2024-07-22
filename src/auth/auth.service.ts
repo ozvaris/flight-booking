@@ -1,5 +1,5 @@
 // src/auth/auth.service.ts
-import { Injectable, UnauthorizedException, ConflictException, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ConflictException, InternalServerErrorException, NotFoundException, HttpStatus, HttpException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -8,6 +8,7 @@ import { User } from '../user/user.entity';
 import { JwtPayload } from './jwt-payload.interface';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { UserWithoutPassword } from './user-without-password.interface';
+import logger from 'src/utils/elkStack';
 
 @Injectable()
 export class AuthService {
@@ -72,8 +73,14 @@ export class AuthService {
   async login(user: User): Promise<{ accessToken: string, user: User}> {
     // console.log("2 - login " + user.email)
     const payload: JwtPayload = { email: user.email, sub: user.id, roles: user.roles };
-
-    const accessToken = this.jwtService.sign(payload);
-    return { accessToken, user };
+    
+    try {
+      const accessToken = this.jwtService.sign(payload);
+      logger.info(`User logged in: ${user.email}`, { tag: 'login', user_email: user.email });
+      return { accessToken, user };
+    } catch (error) {
+      logger.error(`Error logging in user: ${user.email}`, error, { tag: 'login', user_email: user.email });
+      throw new HttpException(`Failed to logged in ${user.email}: ${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }
