@@ -7,7 +7,7 @@ const logger = winston.createLogger({
   transports: [
     new LogstashTransport({
       port: 5044,
-      host: 'localhost', // Docker Compose kullanıyorsanız, Logstash servis adı burada "logstash" olabilir.
+      host: process.env.LOGSTASH_HOST, // Docker Compose kullanıyorsanız, Logstash servis adı burada "logstash" olabilir.
       max_connect_retries: -1, // Bağlantıyı sürekli yeniden denemesi için
     })
   ]

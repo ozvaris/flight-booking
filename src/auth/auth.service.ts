@@ -76,10 +76,10 @@ export class AuthService {
     
     try {
       const accessToken = this.jwtService.sign(payload);
-      logger.info(`User logged in: ${user.email}`, { tag: 'login', user_email: user.email });
+      logger.info(`User logged in: ${user.email}`, { event_type: 'login', tag: 'login', user_email: user.email });
       return { accessToken, user };
     } catch (error) {
-      logger.error(`Error logging in user: ${user.email}`, error, { tag: 'login', user_email: user.email });
+      logger.error(`Error logging in user: ${user.email}`, error, { event_type: 'login', tag: 'login', user_email: user.email });
       throw new HttpException(`Failed to logged in ${user.email}: ${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }

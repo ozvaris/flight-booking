@@ -7,8 +7,13 @@ services:
     ports:
       - "8025:8025" # WebUI
       - "1025:1025" # SMTP
+    volumes:
+      - mailhog-data:/data
 
   alpine:
     image: alpine:latest
     container_name: alpine
     entrypoint: /bin/sh -c "while true; do sleep 30; done;" # Container'ın açık kalmasını sağlar
+    
+volumes:
+  mailhog-data:

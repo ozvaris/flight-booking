@@ -42,9 +42,9 @@ export class BookingService {
 
     try {
       await this.bookingRepository.save(booking);
-      logger.info(`Booking completed with ${booking.user.email} booking details: ${JSON.stringify(booking)}`, { tag: 'bookingConfirmed', user_email: booking.user.email });
+      logger.info(`Booking completed with ${booking.user.email} booking details: ${JSON.stringify(booking)}`, { event_type: 'booking', tag: 'bookingConfirmed', user_email: booking.user.email });
     } catch (error) {
-      logger.error(`Booking completed with  ${booking.user.email}: ${error.message}`, { tag: 'bookingConfirmed', user_email: booking.user.email });
+      logger.error(`Booking completed with  ${booking.user.email}: ${error.message}`, { event_type: 'booking', tag: 'bookingConfirmed', user_email: booking.user.email });
     }
 
     
