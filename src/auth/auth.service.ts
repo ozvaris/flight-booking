@@ -29,6 +29,7 @@ export class AuthService {
       await this.userRepository.save(user);
       const payload: JwtPayload = { email: user.email, sub: user.id, roles: user.roles };
       const accessToken = this.jwtService.sign(payload);
+      logger.info(`User Sign up: ${user.email}`, { event_type: 'signup', tag: 'signup', user_email: user.email });
       return { accessToken, user };
     } catch (error) {
       console.error('Error code:', error.code); 
@@ -36,6 +37,7 @@ export class AuthService {
       if (error.code === '23505') { 
         throw new ConflictException('This user already exists');
       } else {
+        logger.error(`Error logging in user: ${user.email}`, error, { event_type: 'signup', tag: 'signup', user_email: user.email });
         throw new InternalServerErrorException();
       }
     }
