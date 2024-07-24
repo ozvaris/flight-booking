@@ -13,6 +13,8 @@ import { BookingModule } from './booking/booking.module';
 import { User } from './user/user.entity';
 import { Flight } from './flight/flight.entity';
 import { Booking } from './booking/booking.entity';
+import { PaymentModule } from './payment/payment.module';
+import { Payment } from './payment/payment.entity';
 
 @Module({
   imports: [
@@ -25,7 +27,7 @@ import { Booking } from './booking/booking.entity';
       port:  parseInt(process.env.DATABASE_PORT, 10),
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
-      entities: [User, Flight, Booking],
+      entities: [User, Flight, Booking, Payment],
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads'),
@@ -35,6 +37,7 @@ import { Booking } from './booking/booking.entity';
     UserModule,
     FlightModule,
     BookingModule,
+    PaymentModule,
   ],
   providers: [AppService],
   controllers: [AppController],
