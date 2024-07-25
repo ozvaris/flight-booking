@@ -1,31 +1,4 @@
-import { IsString, IsDate, IsNumber, IsOptional } from 'class-validator';
+import { PartialType } from '@nestjs/mapped-types';
+import { CreateFlightDto } from './create-flight.dto';
 
-export class UpdateFlightDto {
-  @IsString()
-  @IsOptional()
-  airline?: string;
-
-  @IsString()
-  @IsOptional()
-  from?: string;
-
-  @IsString()
-  @IsOptional()
-  to?: string;
-
-  @IsDate()
-  @IsOptional()
-  departureTime?: Date;
-
-  @IsDate()
-  @IsOptional()
-  arrivalTime?: Date;
-
-  @IsNumber()
-  @IsOptional()
-  price?: number;
-
-  @IsString()
-  @IsOptional()
-  duration?: string;
-}
+export class UpdateFlightDto extends PartialType(CreateFlightDto) {}

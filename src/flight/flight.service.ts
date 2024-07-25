@@ -28,6 +28,10 @@ export class FlightService {
     return query.getMany();
   }
 
+  async getFlights(): Promise<Flight[]> {
+    return this.flightRepository.find();
+  }
+
   async getFlightById(id: number): Promise<Flight> {
 
     const flight = await this.flightRepository.findOne({ where: { id } });
@@ -44,12 +48,24 @@ export class FlightService {
     return this.flightRepository.save(flight);
   }
 
-  async updateFlight(id: number, updateFlightDto: UpdateFlightDto): Promise<Flight> {
-    await this.flightRepository.update(id, updateFlightDto);
-    return this.getFlightById(id);
+ async updateFlight(id: number, updateFlightDto: UpdateFlightDto): Promise<Flight> {
+    const flight = await this.flightRepository.preload({
+      id,
+      ...updateFlightDto,
+    });
+
+    if (!flight) {
+      throw new NotFoundException(`Flight with ID ${id} not found`);
+    }
+
+    return this.flightRepository.save(flight);
   }
 
   async deleteFlight(id: number): Promise<void> {
-    await this.flightRepository.delete(id);
+    const result = await this.flightRepository.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Flight with ID ${id} not found`);
+    }
   }
+
 }

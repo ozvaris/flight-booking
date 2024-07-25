@@ -21,4 +21,7 @@ export class CreateFlightDto {
 
   @IsString()
   duration: string;
+
+  @IsNumber()
+  availability: number;
 }

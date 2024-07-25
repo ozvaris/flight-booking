@@ -26,4 +26,7 @@ export class Flight {
 
   @Column()
   duration: string;
+
+  @Column({ default: 0 })
+  availability: number;
 }

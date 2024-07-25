@@ -4,3 +4,4 @@ export class UpdateProfileDto {
     lastName?: string;
     profilePicture?: string;
   }
+  

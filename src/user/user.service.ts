@@ -7,6 +7,7 @@ import { UpdateProfileDto } from './dto/update-profile.dto';
 import { UserWithoutPassword } from '../auth/user-without-password.interface';
 import * as fs from 'fs';
 import * as path from 'path';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 
 @Injectable()
@@ -40,7 +41,7 @@ export class UserService {
     return user as UserWithoutPassword;
   }
 
-  async getAllUsers(): Promise<UserWithoutPassword[]> {
+  async getUsers(): Promise<UserWithoutPassword[]> {
     const users = await this.userRepository.createQueryBuilder("user")
         .select([
           "user.id",
@@ -63,6 +64,10 @@ export class UserService {
   async updateProfile(userId: number, updateProfileDto: UpdateProfileDto, file?: Express.Multer.File): Promise<UserWithoutPassword> {
     const user = await this.getProfile(userId);
 
+    if (!user) {
+      throw new NotFoundException(`User with ID ${userId} not found`);
+    }
+
     if (file) {
       const oldProfilePicture = user.profilePicture;
       const newProfilePicture = file.filename;
@@ -82,6 +87,26 @@ export class UserService {
 
     await this.userRepository.update(userId, { ...updateProfileDto, updatedAt: new Date() });
     return this.getProfile(userId);
+  }
+
+  async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+    const user = await this.userRepository.preload({
+      id,
+      ...updateUserDto,
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    return this.userRepository.save(user);
+  }
+
+  async deleteUser(id: number): Promise<void> {
+    const result = await this.userRepository.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
   }
 
 

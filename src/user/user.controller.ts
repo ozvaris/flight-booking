@@ -21,8 +21,7 @@ export class UserController {
 
   @Get()
   getAllUsers() {
-    // console.log("1 - getAllUsers")
-    return this.userService.getAllUsers();
+    return this.userService.getUsers();
   }
 
   

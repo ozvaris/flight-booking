@@ -19,6 +19,7 @@ import { ReviewModule } from './review/review.module';
 import { RatingModule } from './rating/rating.module';
 import { Review } from './review/review.entity';
 import { Rating } from './rating/rating.entity';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { Rating } from './rating/rating.entity';
     PaymentModule,
     ReviewModule,
     RatingModule,
+    AdminModule
   ],
   providers: [AppService],
   controllers: [AppController],
