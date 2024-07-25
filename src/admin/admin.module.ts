@@ -14,6 +14,7 @@ import { Payment } from 'src/payment/payment.entity';
 import { BookingService } from 'src/booking/booking.service';
 import { PaymentService } from 'src/payment/payment.service';
 import { DashboardService } from './dashboard.service';
+import { UserRepository } from 'src/user/user.repository';
 
 @Module({
   imports: [
@@ -29,6 +30,6 @@ import { DashboardService } from './dashboard.service';
     }),
   ],
   controllers: [AdminController],
-  providers: [UserService, FlightService, DashboardService, AuthService, JwtStrategy],
+  providers: [UserService, FlightService, UserRepository, DashboardService, AuthService, JwtStrategy],
 })
 export class AdminModule {}

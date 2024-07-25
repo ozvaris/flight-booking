@@ -22,9 +22,7 @@ export class UserController {
   @Get()
   getAllUsers() {
     return this.userService.getUsers();
-  }
-
-  
+  }  
 
   @Patch(':id')
   @UseInterceptors(

@@ -8,31 +8,18 @@ import { UserWithoutPassword } from '../auth/user-without-password.interface';
 import * as fs from 'fs';
 import * as path from 'path';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserRepository } from './user.repository';
 
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
+    @InjectRepository(UserRepository)
+    private userRepository: UserRepository,
   ) { }
 
   async getProfile(userId: number): Promise<UserWithoutPassword> {
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-      select: [
-        "id",
-        "email",
-        "firstName",
-        "lastName",
-        "profilePicture",
-        "googleId",
-        "facebookId",
-        "roles",
-        "createdAt",
-        "updatedAt"
-      ]
-    });
+    const user = await this.userRepository.findUserWithoutPassword(userId);
 
     if (!user) {
       throw new NotFoundException(`User with ID ${userId} not found`);
@@ -42,22 +29,9 @@ export class UserService {
   }
 
   async getUsers(): Promise<UserWithoutPassword[]> {
-    const users = await this.userRepository.createQueryBuilder("user")
-        .select([
-          "user.id",
-          "user.email",
-          "user.firstName",
-          "user.lastName",
-          "user.profilePicture",
-          "user.googleId",
-          "user.facebookId",
-          "user.roles",
-          "user.createdAt",
-          "user.updatedAt"
-        ])
-        .getRawMany();
+    const users = await this.userRepository.findUserWithoutPassword(null);
 
-      return users as UserWithoutPassword[];
+    return users as UserWithoutPassword[];
   }
 
 

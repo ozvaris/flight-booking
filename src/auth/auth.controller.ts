@@ -7,6 +7,7 @@ import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { User } from '../user/user.entity';
 import * as bcrypt from 'bcryptjs';
+import { UserWithoutPassword } from './user-without-password.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -19,10 +20,10 @@ export class AuthController {
 
   @Post('/login')
   @HttpCode(200)
-  async login(@Body() authCredentialsDto: AuthCredentialsDto): Promise<{ accessToken: string, user: User}> {
+  async login(@Body() authCredentialsDto: AuthCredentialsDto): Promise<{ accessToken: string, user: UserWithoutPassword}> {
 
     try {
-      const user: User = await this.authService.validateUser(authCredentialsDto.email, authCredentialsDto.password);
+      const user: UserWithoutPassword = await this.authService.validateUser(authCredentialsDto.email, authCredentialsDto.password);
       return this.authService.login(user);
     } catch (error) {
       if (error instanceof NotFoundException) {

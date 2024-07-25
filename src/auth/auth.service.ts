@@ -54,7 +54,7 @@ export class AuthService {
     return result;
   }
 
-  async validateUser(email: string, pass: string): Promise<User | null> {
+  async validateUser(email: string, pass: string): Promise<UserWithoutPassword | null> {
     const user = await this.userRepository.findOne({ where: { email } });
 
     // console.log("4 - validateUser %s %s", pass, user.password)
@@ -69,10 +69,10 @@ export class AuthService {
 
     const { password, ...result } = user;
 
-    return user;
+    return result;
   }
 
-  async login(user: User): Promise<{ accessToken: string, user: User}> {
+  async login(user: UserWithoutPassword): Promise<{ accessToken: string, user: UserWithoutPassword}> {
     // console.log("2 - login " + user.email)
     const payload: JwtPayload = { email: user.email, sub: user.id, roles: user.roles };
     
