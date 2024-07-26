@@ -20,6 +20,8 @@ import { RatingModule } from './rating/rating.module';
 import { Review } from './review/review.entity';
 import { Rating } from './rating/rating.entity';
 import { AdminModule } from './admin/admin.module';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 
 @Module({
   imports: [
@@ -38,6 +40,11 @@ import { AdminModule } from './admin/admin.module';
       rootPath: join(__dirname, '..', 'uploads'),
       serveRoot: '/uploads',
     }),
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+    }),
+
     AuthModule,
     UserModule,
     FlightModule,
@@ -45,7 +52,7 @@ import { AdminModule } from './admin/admin.module';
     PaymentModule,
     ReviewModule,
     RatingModule,
-    AdminModule
+    AdminModule,
   ],
   providers: [AppService],
   controllers: [AppController],

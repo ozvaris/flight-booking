@@ -1,0 +1,97 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Flight {
+  id: ID!
+  airline: String!
+  from: String!
+  to: String!
+  departureTime: DateTime!
+  arrivalTime: DateTime!
+  price: Float!
+  duration: String!
+  availability: Float!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Booking {
+  id: ID!
+  user: User!
+  flight: Flight!
+  bookingDate: DateTime!
+  status: String!
+}
+
+type User {
+  id: ID!
+  email: String!
+  password: String!
+  firstName: String
+  lastName: String
+  profilePicture: String
+  googleId: String
+  facebookId: String
+  roles: [String!]!
+  bookings: [Booking!]
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Query {
+  users: [User!]!
+  searchFlights(searchFlightDto: SearchFlightDto!): [Flight!]!
+  flights: [Flight!]!
+  flight(id: Int!): Flight!
+}
+
+input SearchFlightDto {
+  from: String!
+  to: String!
+  departureDate: DateTime!
+  returnDate: DateTime
+}
+
+type Mutation {
+  createUser(createUserInput: CreateUserInput!): User!
+  createFlight(createFlightDto: CreateFlightDto!): Flight!
+  updateFlight(id: Int!, updateFlightDto: UpdateFlightDto!): Flight!
+  deleteFlight(id: Int!): Boolean!
+}
+
+input CreateUserInput {
+  email: String!
+  password: String!
+  firstName: String
+  lastName: String
+  profilePicture: String
+  googleId: String
+  facebookId: String
+  roles: [String!]! = ["user"]
+}
+
+input CreateFlightDto {
+  airline: String!
+  from: String!
+  to: String!
+  departureTime: DateTime!
+  arrivalTime: DateTime!
+  price: Float!
+  duration: String!
+  availability: Float! = 0
+}
+
+input UpdateFlightDto {
+  airline: String
+  from: String
+  to: String
+  departureTime: DateTime
+  arrivalTime: DateTime
+  price: Float
+  duration: String
+  availability: Float
+}

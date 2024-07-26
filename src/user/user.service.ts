@@ -9,7 +9,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserRepository } from './user.repository';
-
+import { CreateUserInput } from './dto/create-user.input';
 
 @Injectable()
 export class UserService {
@@ -17,6 +17,8 @@ export class UserService {
     @InjectRepository(UserRepository)
     private userRepository: UserRepository,
   ) { }
+
+  private users: User[] = [];
 
   async getProfile(userId: number): Promise<UserWithoutPassword> {
     const user = await this.userRepository.findUserWithoutPassword(userId);
@@ -32,6 +34,25 @@ export class UserService {
     const users = await this.userRepository.findUserWithoutPassword(null);
 
     return users as UserWithoutPassword[];
+  }
+
+  create(createUserInput: CreateUserInput): User {
+    const newUser = {
+      ...createUserInput,
+      id: this.users.length + 1,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as User;
+    this.users.push(newUser);
+    return newUser;
+  }
+
+  findAll(): User[] {
+    return this.users;
+  }
+
+  findOne(id: number): User {
+    return this.users.find(user => user.id === id);
   }
 
 
